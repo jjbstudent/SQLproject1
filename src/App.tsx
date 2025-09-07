@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import initSqlJs, { Database, QueryExecResult } from "sql.js";
 
-const SQL_WASM_PATH = "/sql-wasm.wasm"; // Make sure this file is in your public folder
+const SQL_WASM_PATH = "/sql-wasm.wasm";
 
 function App() {
   const [db, setDb] = useState<Database | null>(null);
@@ -14,27 +14,31 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const SQL = await initSqlJs({ locateFile: () => SQL_WASM_PATH });
-      const database = new SQL.Database();
-      database.exec(`
-        CREATE TABLE departments (id INTEGER PRIMARY KEY, name TEXT NOT NULL);
-        INSERT INTO departments (id, name) VALUES (1, 'Engineering'), (2, 'Marketing'), (3, 'Sales');
-        CREATE TABLE employees (
-          id INTEGER PRIMARY KEY,
-          name TEXT NOT NULL,
-          department_id INTEGER,
-          salary INTEGER,
-          FOREIGN KEY (department_id) REFERENCES departments(id)
-        );
-        INSERT INTO employees (id, name, department_id, salary) VALUES
-          (1, 'Alice Johnson', 1, 75000),
-          (2, 'Bob Smith', 1, 82000),
-          (3, 'Charlie Brown', 2, 65000),
-          (4, 'Diana Miller', 3, 90000),
-          (5, 'Eve Davis', 1, 78000),
-          (6, 'Frank White', 2, 68000);
-      `);
-      setDb(database);
+      try {
+        const SQL = await initSqlJs({ locateFile: () => SQL_WASM_PATH });
+        const database = new SQL.Database();
+        database.exec(`
+          CREATE TABLE departments (id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+          INSERT INTO departments (id, name) VALUES (1, 'Engineering'), (2, 'Marketing'), (3, 'Sales');
+          CREATE TABLE employees (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            department_id INTEGER,
+            salary INTEGER,
+            FOREIGN KEY (department_id) REFERENCES departments(id)
+          );
+          INSERT INTO employees (id, name, department_id, salary) VALUES
+            (1, 'Alice Johnson', 1, 75000),
+            (2, 'Bob Smith', 1, 82000),
+            (3, 'Charlie Brown', 2, 65000),
+            (4, 'Diana Miller', 3, 90000),
+            (5, 'Eve Davis', 1, 78000),
+            (6, 'Frank White', 2, 68000);
+        `);
+        setDb(database);
+      } catch (err: any) {
+        setStatus({ msg: "Failed to load SQL WASM: " + err.message, type: "error" });
+      }
     })();
   }, []);
 

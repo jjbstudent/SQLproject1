@@ -67,4 +67,25 @@ export default tseslint.config([
   },
 ])
 ```
-# SQLproject
+# SQL Tester App
+
+A simple React app to test SQL queries in the browser using [sql.js](https://github.com/sql-js/sql.js).
+
+## Usage
+
+1. Start the app:
+   ```
+   npm run dev
+   ```
+2. Enter SQL queries (e.g. `SELECT * FROM employees;`) and see results instantly.
+
+## Development
+
+- Place `sql-wasm.wasm` in the `public` folder.
+- Main code is in `src/App.tsx`.
+
+## Example Queries
+
+- `SELECT * FROM employees;`
+- `SELECT * FROM departments;`
+- `SELECT name, salary FROM employees WHERE salary > 70000;`
